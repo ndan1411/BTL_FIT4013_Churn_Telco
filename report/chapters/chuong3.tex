@@ -1,0 +1,36 @@
+\chapter{PHÂN TÍCH MÃ NGUỒN VÀ CHỨC NĂNG}
+
+Mã nguồn được tổ chức thành một gói Python \texttt{churn} và các tệp kiểm thử; chi tiết cài đặt và chạy nằm trong \texttt{README.md}.
+
+\section{Cấu trúc các module}
+\begin{longtable}{p{4.2cm} p{10cm}}
+    \caption{Các module chính của dự án} \label{tab:modules} \\
+    \hline \textbf{Tệp} & \textbf{Chức năng} \\ \hline
+    \endfirsthead
+    \hline \textbf{Tệp} & \textbf{Chức năng (tiếp)} \\ \hline
+    \endhead
+    \texttt{config.py} & Tham số tái lập (\texttt{RANDOM\_STATE}), đường dẫn và danh sách cột. \\
+    \texttt{data.py} & Nạp CSV, làm sạch, thống kê chất lượng dữ liệu. Không học tham số. \\
+    \texttt{features.py} & Đặc trưng kỹ thuật (Luồng B) và bộ tiền xử lý trong \texttt{Pipeline}. \\
+    \texttt{models.py} & Định nghĩa baseline, K-NN, Naive Bayes, Cây quyết định và lưới tham số. \\
+    \texttt{evaluate.py} & Chia train/test một lần, \texttt{GridSearchCV} trên tập train, tính các độ đo trên tập test. \\
+    \texttt{error\_analysis.py} & Tỷ lệ sai theo nhóm và danh sách các ca bỏ sót (FN). \\
+    \texttt{run\_all.py} & Chạy toàn bộ thí nghiệm, xuất bảng (CSV, LaTeX), hình và \texttt{run\_info.json}. \\
+    \texttt{tests/test\_pipeline.py} & Kiểm thử làm sạch, chống rò rỉ và tái lập. \\
+\end{longtable}
+
+\section{Luồng xử lý khi chạy}
+Lệnh \texttt{python -m churn.run\_all} thực hiện tuần tự: nạp dữ liệu, làm sạch, vẽ hình EDA, chia train/test,
+chạy thí nghiệm cho hai luồng đặc trưng và ba thuật toán cùng baseline, chọn cấu hình tốt nhất theo CV,
+vẽ hình đánh giá, phân tích lỗi và ghi kết quả vào thư mục \texttt{results/}.
+
+\section{Đoạn mã quan trọng: chống rò rỉ dữ liệu}
+Đoạn mã dưới đây thể hiện nguyên tắc cốt lõi: toàn bộ bước học tham số nằm trong Pipeline và được fit trên tập train.
+\begin{verbatim}
+# Pipeline: bộ tiền xử lý + mô hình, cùng được fit trên tập train
+pipe = make_pipeline(model, X_tr)
+search = GridSearchCV(pipe, grid, cv=cv, scoring="f1")
+search.fit(X_tr, y_tr)        # chỉ dữ liệu huấn luyện
+# Tập kiểm thử chỉ dùng để đánh giá, không dùng để chọn
+y_pred = search.best_estimator_.predict(X_te)
+\end{verbatim}

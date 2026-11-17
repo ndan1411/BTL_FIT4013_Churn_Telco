@@ -1,0 +1,7 @@
+DacTrung,MoHinh,n_neighbors,weights,var_smoothing,max_depth,min_samples_leaf
+A_co_ban,KNN,41.0,uniform,,,
+A_co_ban,NaiveBayes,,,0.001,,
+A_co_ban,DecisionTree,,,,5.0,50.0
+B_cai_tien,KNN,41.0,uniform,,,
+B_cai_tien,NaiveBayes,,,1e-09,,
+B_cai_tien,DecisionTree,,,,10.0,50.0

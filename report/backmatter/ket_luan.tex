@@ -1,0 +1,17 @@
+\chapter*{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+\addcontentsline{toc}{chapter}{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+
+\section*{Kết luận}
+Nhóm đã xây dựng một quy trình học máy hoàn chỉnh cho bài toán dự đoán khách hàng rời bỏ dịch vụ viễn thông, từ làm sạch dữ liệu,
+tiền xử lý trong Pipeline có chống rò rỉ, hai luồng đặc trưng, đến so sánh ba thuật toán với một mô hình mốc và phân tích lỗi.
+Trên bộ dữ liệu 7.043 khách hàng, mô hình được chọn theo CV là KNN với luồng đặc trưng cải tiến, đạt F1 0,598, Recall 0,570, Precision 0,629 và ROC-AUC 0,832 trên tập kiểm thử,
+vượt rõ rệt mốc baseline (F1 bằng 0). Hợp đồng theo tháng, thời gian gắn bó và loại internet cáp quang là các yếu tố liên quan mạnh nhất đến việc rời bỏ.
+Chênh lệch giữa các mô hình và giữa hai luồng đặc trưng là nhỏ, nên không có mô hình nào vượt trội rõ ràng.
+
+\section*{Hướng phát triển}
+\begin{itemize}
+    \item Bổ sung dữ liệu theo thời gian để mô hình hóa xu hướng thay đổi hành vi khách hàng.
+    \item Thử nghiệm điều chỉnh ngưỡng quyết định theo chi phí giữ chân và chi phí chăm sóc sai đối tượng.
+    \item Mở rộng lưới siêu tham số (đặc biệt là $k$ của KNN và \texttt{min\_samples\_leaf}) và so sánh với các mô hình ensemble.
+    \item Lặp lại đánh giá nhiều lần để kiểm định ý nghĩa thống kê của sự khác biệt giữa các cấu hình.
+\end{itemize}

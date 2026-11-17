@@ -1,0 +1,45 @@
+\chapter{THIẾT KẾ GIẢI PHÁP VÀ QUY TRÌNH HỌC MÁY}
+
+\section{Sơ đồ quy trình}
+Quy trình gồm các bước: nạp và làm sạch dữ liệu; chia train/test một lần theo phân tầng nhãn; tiền xử lý và tạo đặc trưng
+trong Pipeline; tinh chỉnh siêu tham số bằng 5-fold CV trên tập train; đánh giá trên tập test; phân tích lỗi.
+
+\section{Làm sạch dữ liệu}
+Các bước không học tham số được thực hiện trước khi chia dữ liệu: bỏ cột định danh, ép kiểu \texttt{TotalCharges} sang số
+(ô trống thành thiếu), mã hóa nhãn \texttt{Yes}/\texttt{No} thành 1/0, kiểm tra và loại dòng trùng lặp.
+
+\section{Chia dữ liệu và chống rò rỉ}
+Dữ liệu được chia 80\% huấn luyện và 20\% kiểm thử theo phương pháp phân tầng nhãn, với \texttt{random\_state=42}.
+Phép chia này được thực hiện \textbf{một lần} và dùng chung cho mọi thí nghiệm, để các mô hình được so sánh trên cùng dữ liệu.
+
+Các bước học tham số được đặt trong \texttt{Pipeline} của scikit-learn: điền trung vị cho biến số, chuẩn hóa \texttt{StandardScaler}
+và mã hóa one-hot cho biến phân loại. Các bước này chỉ được fit trên tập huấn luyện, và kiểm thử đơn vị xác nhận điều đó.
+
+\section{Hai luồng tiền xử lý và đặc trưng}
+\begin{itemize}
+    \item \textbf{Luồng A (cơ bản):} giữ đặc trưng gốc, điền thiếu, chuẩn hóa biến số và one-hot biến phân loại.
+    \item \textbf{Luồng B (cải tiến):} bổ sung bốn đặc trưng có lý giải:
+    \begin{itemize}
+        \item \texttt{num\_services}: số dịch vụ đăng ký; giả thuyết: khách dùng nhiều dịch vụ gắn bó lâu hơn.
+        \item \texttt{charge\_per\_tenure}: \texttt{TotalCharges}/(tenure + 1); đo mức chi tiêu trung bình theo thời gian gắn bó.
+        \item \texttt{tenure\_group}: nhóm thời gian gắn bó (0--12, 13--24, 25--48, 49+); quan hệ với nguy cơ rời bỏ không tuyến tính.
+        \item \texttt{is\_month\_to\_month}: hợp đồng theo tháng, nhóm có nguy cơ cao nhất trong EDA.
+    \end{itemize}
+\end{itemize}
+Các đặc trưng mới chỉ dùng thông tin của chính khách hàng đó, không dùng nhãn nên không gây rò rỉ.
+
+\section{Các thuật toán và siêu tham số}
+\begin{itemize}
+    \item \textbf{Baseline (mốc so sánh):} luôn dự đoán lớp đa số (không rời bỏ). Mô hình này cho Accuracy cao nhưng không có giá trị dự đoán,
+    nên được dùng để kiểm tra xem các mô hình có học được điều gì hay không.
+    \item \textbf{K-NN:} số láng giềng $k \in \{5, 11, 21, 41\}$, trọng số đều hoặc theo khoảng cách. Đặc trưng số được chuẩn hóa vì K-NN dựa trên khoảng cách.
+    \item \textbf{Naive Bayes Gaussian:} tham số làm mượt phương sai $\in \{10^{-9}, 10^{-7}, 10^{-5}, 10^{-3}\}$.
+    \item \textbf{Cây quyết định:} độ sâu tối đa $\in \{3, 5, 7, 10, \text{không giới hạn}\}$ và số mẫu tối thiểu ở lá $\in \{1, 20, 50\}$.
+\end{itemize}
+Lý do lựa chọn: ba thuật toán nằm trong danh sách đã học của học phần, dễ giải thích và có sự khác biệt về giả định.
+Lưới tham số được giữ nhỏ để kết quả có thể tái tạo và giải thích được phạm vi tìm kiếm.
+
+\section{Tiêu chí đánh giá}
+Vì nhãn không cân bằng, nhóm báo cáo Accuracy, Precision, Recall, F1-score, ROC-AUC và PR-AUC cùng ma trận nhầm lẫn.
+F1 được dùng làm tiêu chí chọn siêu tham số trong CV; PR-AUC đặc biệt phù hợp khi lớp thiểu số là lớp quan tâm.
+Mô hình được chọn theo F1 trung bình trong CV trên tập huấn luyện, không chọn theo tập kiểm thử.

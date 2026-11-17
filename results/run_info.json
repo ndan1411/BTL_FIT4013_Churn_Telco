@@ -1,0 +1,21 @@
+{
+  "du_lieu": "WA_Fn-UseC_-Telco-Customer-Churn.csv",
+  "la_du_lieu_tong_hop": false,
+  "chat_luong": {
+    "so_dong": 7043,
+    "so_cot": 21,
+    "dong_trung_lap": 0,
+    "o_thieu_TotalCharges_dang_chuoi_trong": 11,
+    "ti_le_churn": 0.2653698707936959
+  },
+  "so_dong_train": 5616,
+  "so_dong_test": 1405,
+  "mo_hinh_tot_nhat_theo_CV": {
+    "dac_trung": "B_cai_tien",
+    "mo_hinh": "KNN"
+  },
+  "random_state": 42,
+  "test_size": 0.2,
+  "cv_folds": 5,
+  "scoring": "f1"
+}

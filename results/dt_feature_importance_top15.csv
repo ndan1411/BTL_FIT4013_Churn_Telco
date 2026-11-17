@@ -1,0 +1,16 @@
+,importance
+cat__Contract_Month-to-month,0.466470410705794
+num__tenure,0.15967934291517513
+cat__InternetService_Fiber optic,0.1446514290439412
+num__TotalCharges,0.059446598140985435
+num__MonthlyCharges,0.044927292439136846
+num__charge_per_tenure,0.027727253965387236
+cat__OnlineSecurity_No,0.019033562350749073
+cat__MultipleLines_Yes,0.01742908724893411
+cat__PhoneService_Yes,0.013806450893202768
+cat__PaymentMethod_Electronic check,0.012622729460528398
+cat__OnlineBackup_No,0.0057820060059542485
+num__SeniorCitizen,0.004899327176726644
+cat__PaperlessBilling_Yes,0.004544301345323199
+cat__Contract_Two year,0.003904016356790112
+cat__StreamingTV_Yes,0.0031031955556049115
